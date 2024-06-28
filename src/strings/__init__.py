@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import ast
-from typing import Iterator
 import warnings
 
 
 class StringFinder(ast.NodeVisitor):
     def __init__(self) -> None:
-        self.strings: list[int, str] = []
+        self.strings: list[tuple[int, str]] = []
 
     def visit_Expr(self, node: ast.Expr) -> None:
         """
@@ -43,7 +42,7 @@ class StringFinder(ast.NodeVisitor):
         self.strings.append((node.lineno, node.value))
 
 
-def find_strings(filepath: str) -> Iterator[tuple[int, str]]:
+def find_strings(filepath: str) -> list[tuple[int, str]]:
     """Find all strings, and their corresponding line numbers in a file."""
     with open(filepath, "rb") as file:
         content = file.read()
@@ -53,7 +52,7 @@ def find_strings(filepath: str) -> Iterator[tuple[int, str]]:
             warnings.simplefilter("ignore")
             tree = ast.parse(content)
     except (SyntaxError, ValueError):
-        return ()
+        return []
 
     string_finder = StringFinder()
     string_finder.visit(tree)

@@ -6,7 +6,7 @@ import argparse
 import contextlib
 import os.path
 import pathlib
-from typing import Iterator
+from typing import Iterable, Iterator
 
 from strings import find_strings
 
@@ -37,7 +37,7 @@ def cli(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv, namespace=CLIArgs)
     if os.path.isdir(args.filepath):
-        files = python_files(args.filepath)
+        files: Iterable[str] = python_files(args.filepath)
     else:
         files = [args.filepath]
 
